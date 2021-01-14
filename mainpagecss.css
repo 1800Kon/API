@@ -1,0 +1,22 @@
+body{
+    background-color: #cce6ff;
+   }
+   header{
+    text-align: center;
+    height: 100px;
+    padding-top: 1px;
+    background-color: #3399ff;
+    color: #FFFFFF;
+    font-size: 20pt;
+   }
+   h3{
+    margin-top: 2px;
+    text-align: center;
+    background-color: #5350ff;
+    color: #FFFFFF;
+   }
+   form{
+    width: 100%;
+    display: inline;
+    margin: 20px;
+   }

@@ -1,0 +1,46 @@
+{
+  "id": "http://json-schema.org/geo",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Busiest airports",
+  "description": "Data about the busiest airports",
+  "type": "object",
+  "properties": {
+    "rank":{
+      "description": "The rank of the airport",
+      "type": "number"
+    },
+    "year": {
+      "description": "The year in which the data is reported",
+      "type": "number"
+    },
+    "airport": {
+      "description": "The airport name",
+      "type": "string"
+    },
+    "code": {
+      "description": "The airport code",
+      "type": "string"
+    },
+    "location": {
+      "description": "The location of the airport",
+      "type": "string"
+    },
+    "country": {
+      "description": "The country in which the airport is situated",
+      "type": "string"
+    },
+    "total_passengers": {
+      "description": "The number of passengers which arrived in the specified airport",
+      "type": "number"
+    }
+  },
+  "required": [
+    "rank",
+    "year",
+    "airport",
+    "code",
+    "location",
+    "country",
+    "total_passengers"
+  ]
+}

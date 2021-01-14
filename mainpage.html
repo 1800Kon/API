@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <meta charset = "UTF-8">
+  <link rel = "stylesheet" href="mainpagecss.css">
+  <title> Page </title>
+</head>
+<body>
+    <header>
+      <h1>Busiest airlines</h1>
+    </header>
+    <form action="/add" method="POST">
+      <fieldset>
+        <h3>Add new entry</h3>
+        <label>Rank</label>
+        <input type ="text" id = 'rank' name="rank" required>
+        <br><br>
+        <label>Year</label>
+        <input type ="text" id = 'year' name="year" required>
+        <br><br>
+        <label>airport</label>
+        <input type ="text" id = 'airport' name="airport" required>
+        <br><br>
+        <label>Code</label>
+        <input type ="text" id = 'code' name="code" required>
+        <br><br>
+        <label>Location</label>
+        <input type ="text" id = 'location' name="location" required>
+        <br><br>
+        <label>Country</label>
+        <input type="text" id = "country" name="country" required>
+        <br><br>
+        <label>Total passengers</label>
+        <input type ="text" id = 'totalpassengers' name="totalpassengers" required>
+        <br><br>
+        <button type ="reset">Reset</button>
+        <button type ="submit">Submit</button>
+      </fieldset>
+    </form>
+
+    <form action="/update" method="POST">
+        <fieldset>
+          <h3>Update an entry </h3>
+          <h3>Old data </h3>
+          <label>Rank</label>
+          <input type ="text" id = 'rankupdate' name="rankupdate" required>
+          <br><br>
+          <label>Year</label>
+          <input type ="text" id = 'yearupdate' name="yearupdate" required>
+          <br><br>
+          <label>Airport</label>
+          <input type ="text" id = 'airportupdate' name="airportupdate" required>
+          <br><br>
+          <label>Code</label>
+          <input type ="text" id = 'codeupdate' name="codeupdate" required>
+          <br><br>
+          <label>Location</label>
+          <input type ="text" id = 'locationupdate' name="locationupdate" required>
+          <br><br>
+          <label>Country</label>
+          <input type="text" id = "countryupdate" name="countryupdate" required>
+          <br><br>
+          <label>Total passengers</label>
+          <input type ="text" id = 'totalpassengersupdate' name="totalpassengersupdate" required>
+          <br><br>
+          <h3>New data </h3>
+          <label>Rank</label>
+          <input type ="text" id = 'rankupdate' name="rankupdate" required>
+          <br><br>
+          <label>Year</label>
+          <input type ="text" id = 'yearupdate' name="yearupdate" required>
+          <br><br>
+          <label>Airport</label>
+          <input type ="text" id = 'airportupdate' name="airportupdate" required>
+          <br><br>
+          <label>Code</label>
+          <input type ="text" id = 'codeupdate' name="codeupdate" required>
+          <br><br>
+          <label>Location</label>
+          <input type ="text" id = 'locationupdate' name="locationupdate" required>
+          <br><br>
+          <label>Country</label>
+          <input type="text" id = "countryupdate" name="countryupdate" required>
+          <br><br>
+          <label>Total passengers</label>
+          <input type ="text" id = 'totalpassengersupdate' name="totalpassengersupdate" required>
+          <br><br>
+          <button type ="reset">Reset</button>
+          <button type ="submit">Submit</button>
+        </fieldset>
+       </form>
+
+    <form action="/view" method="POST">
+        <fieldset>
+          <h3>View the airport in the rank position in the year you want</h3>
+          <label>Rank</label>
+          <input type="text" id="rankview" name="rankview" required>
+          <br><br>
+          <label>Year</label>
+          <input type="text" id="yearview" name="yearview" required>
+          <br><br>
+          <button type ="reset">Reset</button>
+          <button type ="submit">Submit</button>
+          <br><br><br>
+        </fieldset>
+       </form>
+
+
+      <form action="/delete" method="POST">
+        <fieldset>
+          <h3>Delete an employee</h3>
+          <label>Employee ID</label>
+          <input type ="text" id = 'empID' name="id" required>
+          <br><br>
+          <button type ="reset">Reset</button>
+          <button type ="submit">Submit</button>
+          <br><br><br>
+        </fieldset>
+       </form>
+
+    </body>
+  </html>
