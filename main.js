@@ -6,6 +6,7 @@ var validate = require('jsonschema').validate;
 app.use(express.json());
 const busiestAirportsSchema = require('./busiest_airports_schema.json')
 const busiestAirportsSchemaUpdate = require('./busiest_airports_update_schema.json')
+const busiestAirportsSchemaDelete = require('./busiest_airport_schema_delete.json')
 //Database connection
 var connection = mysql.createConnection({
     host: "localhost",
@@ -38,7 +39,7 @@ function endconnection() {
 
 //App.get represents that this is a get request, the "/" is the path at which the api will respond with the response.send("hello").
 app.get('/', (req, res) => {
-    res.send("Hello");
+    res.send("This is the main page where I'll put an index");
 })
 
 //Get the busiest airports based on rank and year
@@ -55,8 +56,10 @@ app.get('/busiestAirports/rank/:rank/:year', (req, res) => {
                 //Check if there were any results
                 if (result < 1) {
                     res.status(404).send("No data found for these parameters.")
+                    endconnection()
                 } else {
                     res.send(result);
+                    endconnection()
                 }
             });
         }
@@ -73,10 +76,12 @@ app.post('/busiestAirports/addEntry', (req, res) => {
         res.status(400).send("Please use Json")
     } else {
         try {
+            //Save the input to a variable and then validate it
             var jsonInput = req.body;
             var result = validate(jsonInput, busiestAirportsSchema);
             if (result.valid) {
                 if (connectToDB) {
+                    //Save all the variables to an array so they can be inserted into the query string safely
                     var array = [jsonInput.rank, jsonInput.year, jsonInput.airport, jsonInput.code, jsonInput.location, jsonInput.country, jsonInput.total_passengers]
                     connection.query(sql, array, function (err, result) {
                         if (err) {
@@ -84,6 +89,8 @@ app.post('/busiestAirports/addEntry', (req, res) => {
                             endconnection()
                         } else {
                             res.send("Data has been inserted.")
+                            //Close the connection each time
+                            endconnection()
                         }
                     });
 
@@ -116,8 +123,10 @@ app.put('/busiestAirports/updateSingleRank', (req, res) => {
                         } else {
                             if (result.affectedRows > 0) {
                                 res.send("The row has been succesfully updated")
+                                endconnection()
                             } else {
                                 res.status(404).send("No entries were found with the parameters provided")
+                                endconnection()
                             }
                         }
                     });
@@ -140,10 +149,10 @@ app.delete('/busiestAirports/deleteEntry', (req, res) => {
     } else {
         try {
             var jsonInput = req.body;
-            var result = validate(jsonInput, busiestAirportsSchemaUpdate);
+            var result = validate(jsonInput, busiestAirportsSchemaDelete);
             if (result.valid) {
                 if (connectToDB) {
-                    var array = [jsonInput.rank, jsonInput.airport, jsonInput.ID ,jsonInput.total_passengers]
+                    var array = [jsonInput.ID ,jsonInput.airport]
                     connection.query(sql, array, function (err, result) {
                         if (err) {
                             res.send(err.message)
@@ -151,12 +160,13 @@ app.delete('/busiestAirports/deleteEntry', (req, res) => {
                         } else {
                             if (result.affectedRows > 0) {
                                 res.send("The entry has been succesfully deleted")
+                                endconnection()
                             } else {
                                 res.status(404).send("No entries were found with the parameters provided")
+                                endconnection()
                             }
                         }
                     });
-
                 }
             } else {
                 res.status(400).send(result)
