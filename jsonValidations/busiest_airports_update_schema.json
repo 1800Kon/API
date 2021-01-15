@@ -7,11 +7,13 @@
   "properties": {
     "ID": {
         "description": "Unique ID",
-        "type": "number"
+        "type": "number",
+        "minimum": 0
     },
     "rank": {
       "description": "The rank of the airport",
-      "type": "number"
+      "type": "number",
+      "minimum": 0
     },
     "airport": {
       "description": "The airport name",

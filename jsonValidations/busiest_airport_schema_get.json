@@ -7,11 +7,14 @@
     "properties": {
       "rank": {
         "description": "The rank of the airport",
-        "type": "number"
+        "type": "number",
+        "minimum": 0
       },
       "year": {
         "description": "The year in which the data is reported",
-        "type": "number"
+        "type": "number",
+        "minimum": 0,
+        "maximum": 2021
       }
     },
     "required": [
