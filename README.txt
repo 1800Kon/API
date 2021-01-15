@@ -6,7 +6,11 @@ On it's current state (15/1/2021) the API can:
 Things that still have to be done:
     - Make the CRUD operation paths for the rest of the databases
     - Make a query that can get information from different databases
-
+    - Accept API request in XML and validate them
+    - Create the website for the application
+    - Connect website fields to API for input
+    - Visualize data
+I really only need like 3 days to finish this lol, went from python with flask, to php, to NodeJs, I'll gladly do the resit, but in the meantime this is what I have
 
 The paths are as follows:
 

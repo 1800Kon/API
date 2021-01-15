@@ -7,7 +7,7 @@
       <xs:element name="month" type="xs:number" use="required"/>
       <xs:element name="carrier_name" type="xs:string" use="required"/>
       <xs:element name="airport_name" type="xs:string" use="required"/>
-	  <xs:element name="airport_code" type="xs:string" use="required"/>
+	    <xs:element name="airport_code" type="xs:string" use="required"/>
       <xs:element name="number_of_flights" type="xs:number" use="required"/>
       <xs:element name="number_of_late_flights_by_fifteen_minutes" type="xs:number" use="required"/>
       <xs:element name="number_of_delayed_flights_with_carrier_delays" type="xs:number" use="required"/>
