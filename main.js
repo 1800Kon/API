@@ -7,10 +7,10 @@ var libxml = require("libxmljs2");
 app.use(express.json());
 
 //Constants
-const busiestAirportsSchema = require('./busiest_airports_schema.json')
-const busiestAirportsSchemaGet = require('./busiest_airport_schema_get.json')
-const busiestAirportsSchemaUpdate = require('./busiest_airports_update_schema.json')
-const busiestAirportsSchemaDelete = require('./busiest_airport_schema_delete.json')
+const busiestAirportsSchema = require('./jsonValidations/busiest_airports_schema.json')
+const busiestAirportsSchemaGet = require('./jsonValidations/busiest_airport_schema_get.json')
+const busiestAirportsSchemaUpdate = require('./jsonValidations/busiest_airports_update_schema.json')
+const busiestAirportsSchemaDelete = require('./jsonValidations/busiest_airport_schema_delete.json')
 
 //Database connection, could use connection pooling to fix the issue with having to reinstantiate the connection
 var connection = mysql.createConnection({
