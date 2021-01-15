@@ -3,9 +3,11 @@
 <xs:element name="Busiest airports">
   <xs:complexType>
     <xs:sequence>
+    <xs:element name="rank" type="xs:number" use="required"/>
       <xs:element name="year" type="xs:number" use="required"/>
-      <xs:element name="airport_name" type="xs:string" use="required"/>
-      <xs:element name="airport_code" type="xs:string" use="required"/>
+      <xs:element name="airport" type="xs:string" use="required"/>
+      <xs:element name="code" type="xs:string" use="required"/>
+      <xs:element name="location" type="xs:string" use="required"/>
       <xs:element name="country" type="xs:string" use="required"/>
 	  <xs:element name="total_passengers" type="xs:number" use="required"/>
     </xs:sequence>
