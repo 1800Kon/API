@@ -7,13 +7,14 @@ var libxml = require("libxmljs2");
 app.use(express.json());
 
 //Constants
-const busiestAirportsSchema = require('./jsonValidations/busiest_airports_schema.json')
-const busiestAirportsSchemaGet = require('./jsonValidations/busiest_airport_schema_get.json')
-const busiestAirportsSchemaUpdate = require('./jsonValidations/busiest_airports_update_schema.json')
-const busiestAirportsSchemaDelete = require('./jsonValidations/busiest_airport_schema_delete.json')
-const delayGetSchema = require('./jsonValidations/delay_get_schema.json')
-const twitterSchema = require('./jsonValidations/twitter_schema.json')
-
+const busiestAirportsSchema = require('./jsonValidations/busiest_airports_schema.json');
+const busiestAirportsSchemaGet = require('./jsonValidations/busiest_airport_schema_get.json');
+const busiestAirportsSchemaUpdate = require('./jsonValidations/busiest_airports_update_schema.json');
+const busiestAirportsSchemaDelete = require('./jsonValidations/busiest_airport_schema_delete.json');
+const delayGetSchema = require('./jsonValidations/delay_get_schema.json');
+const twitterSchema = require('./jsonValidations/twitter_schema.json');
+const tweetGetSchema = require('./jsonValidations/twitter_get_schema.json');
+const delayPostSchema = require('./jsonValidations/delay_post_schema.json');
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -82,7 +83,7 @@ app.get('/flightDelays/delaysFromYearMonth/:year/:month', (req, res) => {
     if (/^\d+$/.test(year) && /^\d+$/.test(month)) {
         if (connectToDB) {
             //Values automatically escaped
-            connection.query(sql, [year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay], function(err, result) {
+            connection.query(sql, [year, month], function(err, result) {
                 if (err) throw err;
                 //Check if there were any results
                 if (result < 1) {
@@ -122,7 +123,6 @@ app.get('/tweets/getPositiveNegativeTweetsAirline/:sentiment/:airline', (req, re
                 } else {
                     res.status(404).send("The data found was not valid");
                 }
-                res.send(result);
             }
         });
     }
@@ -217,7 +217,7 @@ app.post('/tweets/addEntry', (req, res) => {
 });
 
 //Add a record to the airline delays table
-app.post('/tweets/addEntry', (req, res) => {
+app.post('/flightDelays/addEntry', (req, res) => {
     //Connection
     var connection = mysql.createConnection({
         host: "localhost",
@@ -232,7 +232,7 @@ app.post('/tweets/addEntry', (req, res) => {
         try {
             //Save the input to a variable and then validate it
             var jsonInput = req.body;
-            var result = validate(jsonInput, XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX);
+            var result = validate(jsonInput, delayPostSchema);
             if (result.valid) {
                 if (connectToDB) {
                     //Save all the variables to an array so they can be inserted into the query string safely
