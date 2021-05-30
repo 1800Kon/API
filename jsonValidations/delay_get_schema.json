@@ -9,40 +9,64 @@
             "description": "The year in which the delay happened",
             "type": "number"
         },
+        "month": {
+            "description": "The month",
+            "type": "number"
+        },
+        "carrier": {
+            "description": "The carrier",
+            "type": "string"
+        },
+        "carrier_name": {
+            "description": "The carrier name",
+            "type": "string"
+        },
+        "airport": {
+            "description": "The airport",
+            "type": "string"
+        },
         "airport_name": {
             "description": "The airport name in which the delay happened",
             "type": "string"
         },
-        "number_of_flights": {
+        "arr_flights": {
             "description": "The number of arriving flights on the month specified",
             "type": "number"
         },
-        "number_of_late_flights_by_fifteen_minutes": {
+        "arr_del15": {
             "description": "The number arriving flight which were late by 15 minutes on the month specified",
             "type": "number"
         },
-        "number_of_delayed_flights_with_carrier_delays": {
+        "carrier_ct": {
             "description": "The number of arriving flights on the month specified which were late due to carrier delays",
             "type": "number"
         },
-        "number_of_delayed_flights_with_weather_delays": {
+        "weather_ct": {
             "description": "The number of arriving flights on the month specified which were late due to weather delays",
             "type": "number"
         },
-        "number_of_delayed_flights_with_national_aviation_system_delays": {
+        "nas_ct": {
             "description": "The number of arriving flights on the month specified which were late due to NAS delays",
             "type": "number"
         },
-        "number_of_delayed_flights_with_security_delays": {
+        "security_ct": {
             "description": "The number of arriving flights on the month specified which were late due to security delays",
             "type": "number"
         },
-        "number_of_delayed_flights_with_late_aircraft_delays": {
+        "late_aircraft_ct": {
             "description": "The number of arriving flights on the month specified which were late due to late aircraft arrival delays",
             "type": "number"
         },
-        "arrival_delay_time": {
-            "description": "The total number of time in minutes that aircraft were late",
+        "arr_cancelled": {
+            "description": "The total number of flights cancelled",
+            "type": "number"
+        },
+        "arr_diverted": {
+            "description": "The total number of flights diverted",
+            "type": "number"
+        },
+        "arr_delay": {
+            "description": "The total number of minutes delayed",
             "type": "number"
         }
     }

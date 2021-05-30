@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.get('/busiestAirports/getRankOfYear/:rank/:year', (req, res) => {
     var rank = req.params.rank;
     var year = req.params.year;
-    var sql = "SELECT * FROM busiest_airports WHERE rank = ? AND year = ?";
+    var sql = "SELECT rank, year, airport, code, location, country, total_passengers FROM busiest_airports WHERE rank = ? AND year = ?";
     //Checks if the parameters only have numbers
     if (/^\d+$/.test(rank) && /^\d+$/.test(year)) {
         if (connectToDB) {
@@ -58,7 +58,12 @@ app.get('/busiestAirports/getRankOfYear/:rank/:year', (req, res) => {
                 if (result < 1) {
                     res.status(404).send("No data found for these parameters.")
                 } else {
-                    res.send(result);
+                    var validated = validate(result, busiestAirportsSchema);
+                    if (validated) {
+                        res.send(result);
+                    } else {
+                        res.status(404).send("The data found was not valid");
+                    }
                 }
             });
         }
@@ -72,18 +77,23 @@ app.get('/busiestAirports/getRankOfYear/:rank/:year', (req, res) => {
 app.get('/flightDelays/delaysFromYearMonth/:year/:month', (req, res) => {
     var year = req.params.year;
     var month = req.params.month;
-    var sql = "SELECT * FROM airline_delay_causes WHERE year = ? AND month = ?";
+    var sql = "SELECT year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay FROM airline_delay_causes WHERE year = ? AND month = ?";
     //Checks if the parameters only have numbers
     if (/^\d+$/.test(year) && /^\d+$/.test(month)) {
         if (connectToDB) {
             //Values automatically escaped
-            connection.query(sql, [year, month], function(err, result) {
+            connection.query(sql, [year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay], function(err, result) {
                 if (err) throw err;
                 //Check if there were any results
                 if (result < 1) {
                     res.status(404).send("No data found for these parameters.")
                 } else {
-                    res.send(result);
+                    var validated = validate(result, delayGetSchema);
+                    if (validated) {
+                        res.send(result);
+                    } else {
+                        res.status(404).send("The data found was not valid");
+                    }
                 }
             });
         }
@@ -106,6 +116,12 @@ app.get('/tweets/getPositiveNegativeTweetsAirline/:sentiment/:airline', (req, re
             if (result < 1) {
                 res.status(404).send("No data found for these parameters.")
             } else {
+                var validated = validate(result, tweetGetSchema)
+                if (validated) {
+                    res.send(result);
+                } else {
+                    res.status(404).send("The data found was not valid");
+                }
                 res.send(result);
             }
         });
