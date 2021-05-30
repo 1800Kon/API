@@ -66,7 +66,27 @@
             "type": "number"
         },
         "arr_delay": {
-            "description": "The total number of minutes delayed",
+            "description": "Arrival delay",
+            "type": "number"
+        },
+        "carrier_delay": {
+            "description": "Carrier delay",
+            "type": "number"
+        },
+        "weather_delay": {
+            "description": "Delay by weather",
+            "type": "number"
+        },
+        "nas_delay": {
+            "description": "National aviation security delay",
+            "type": "number"
+        },
+        "security_delay": {
+            "description": "Security delays",
+            "type": "number"
+        },
+        "late_aircraft_delay": {
+            "description": "Late aircraft delay",
             "type": "number"
         }
     }
