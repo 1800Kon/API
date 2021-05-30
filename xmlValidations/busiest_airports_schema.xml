@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="Busiest airports">
+  <xs:complexType>
+    <xs:sequence>
+    <xs:element name="rank" type="xs:number" use="required"/>
+      <xs:element name="year" type="xs:number" use="required"/>
+      <xs:element name="airport" type="xs:string" use="required"/>
+      <xs:element name="code" type="xs:string" use="required"/>
+      <xs:element name="location" type="xs:string" use="required"/>
+      <xs:element name="country" type="xs:string" use="required"/>
+	  <xs:element name="total_passengers" type="xs:number" use="required"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
