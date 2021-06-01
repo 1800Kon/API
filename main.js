@@ -6,15 +6,21 @@ var validate = require('jsonschema').validate;
 var libxml = require("libxmljs2");
 app.use(express.json());
 
-//Constants
+//Schemas
 const busiestAirportsSchema = require('./jsonValidations/busiest_airports_schema.json');
-const busiestAirportsSchemaGet = require('./jsonValidations/busiest_airport_schema_get.json');
 const busiestAirportsSchemaUpdate = require('./jsonValidations/busiest_airports_update_schema.json');
 const busiestAirportsSchemaDelete = require('./jsonValidations/busiest_airport_schema_delete.json');
+
 const delayGetSchema = require('./jsonValidations/delay_get_schema.json');
+const delayPostSchema = require('./jsonValidations/delay_post_schema.json');
+const delayUpdateSchema = require('./jsonValidations/delay_update_schema.json');
+const delayDeleteSchema = require('./jsonValidations/delay_delete_schema.json');
+
 const twitterSchema = require('./jsonValidations/twitter_schema.json');
 const tweetGetSchema = require('./jsonValidations/twitter_get_schema.json');
-const delayPostSchema = require('./jsonValidations/delay_post_schema.json');
+const tweetDeleteSchema = require('./jsonValidations/twitter_delete_schema.json');
+const tweetUpdateSchema = require('./jsonValidations/twitter_update_schema.json')
+
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -256,9 +262,14 @@ app.post('/flightDelays/addEntry', (req, res) => {
     }
 });
 
+// UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE
+// UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE
+// UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE
+// UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE
+// UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE UPDATE
 
 //Update the rank of a single airport
-app.put('/busiestAirports/updateSingleRank', (req, res) => {
+app.put('/busiestAirports/updateRank', (req, res) => {
     //Connection
     var connection = mysql.createConnection({
         host: "localhost",
@@ -301,6 +312,99 @@ app.put('/busiestAirports/updateSingleRank', (req, res) => {
     }
 })
 
+// Update airline delay cause
+app.put('/flightDelays/updateData', (req, res) => {
+    //Connection
+    var connection = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "api_database_dp"
+    });
+    var sql = "UPDATE airline_delay_causes SET arr_flights = ?, arr_del15 = ?, carrier_ct = ?, weather_ct = ?, nas_ct = ?, security_ct = ?, late_aircraft_ct = ?, arr_cancelled = ?, arr_diverted = ?, arr_delay = ?, carrier_delay = ?, weather_delay = ?, nas_delay = ?, security_delay = ?, late_aircraft_delay = ? WHERE year = ? AND month = ? AND carrier = ? AND airport = ?"
+    if (req.get("Content-Type") != "application/json") {
+        res.status(400).send("Please use Json")
+    } else {
+        try {
+            var jsonInput = req.body;
+            var result = validate(jsonInput, delayUpdateSchema);
+            if (result.valid) {
+                if (connectToDB) {
+                    var array = [jsonInput.arr_flights, jsonInput.arr_del15, jsonInput.carrier_ct, jsonInput.weather_ct, jsonInput.nas_ct, jsonInput.security_ct, jsonInput.late_aircraft_ct, jsonInput.arr_cancelled, jsonInput.arr_diverted, jsonInput.arr_delay, jsonInput.carrier_delay, jsonInput.weather_delay, jsonInput.nas_delay, jsonInput.security_delay, jsonInput.late_aircraft_delay, jsonInput.year, jsonInput.month, jsonInput.carrier, jsonInput.airport];
+                    connection.query(sql, array, function(err, result) {
+                        if (err) {
+                            res.send(err.message)
+                            connection.end();
+                        } else {
+                            if (result.affectedRows > 0) {
+                                res.send("The row has been succesfully updated")
+                                connection.end();
+                            } else {
+                                res.status(404).send("No entries were found with the parameters provided")
+                                connection.end();
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                res.status(400).send(result)
+            }
+        } catch (err) {
+            res.send(err.message)
+        }
+    }
+})
+
+// Update tweet
+app.put('/tweets/updateTweetText', (req, res) => {
+        //Connection
+        var connection = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "",
+            database: "api_database_dp"
+        });
+        var sql = "UPDATE tweets SET text = ? WHERE name = ? AND airline = ?"
+        if (req.get("Content-Type") != "application/json") {
+            res.status(400).send("Please use Json")
+        } else {
+            try {
+                var jsonInput = req.body;
+                var result = validate(jsonInput, tweetUpdateSchema);
+                if (result.valid) {
+                    if (connectToDB) {
+                        var array = [jsonInput.text, jsonInput.name, jsoninput.airline];
+                        connection.query(sql, array, function(err, result) {
+                            if (err) {
+                                res.send(err.message)
+                                connection.end();
+                            } else {
+                                if (result.affectedRows > 0) {
+                                    res.send("The row has been succesfully updated")
+                                    connection.end();
+                                } else {
+                                    res.status(404).send("No entries were found with the parameters provided")
+                                    connection.end();
+                                }
+                            }
+                        });
+
+                    }
+                } else {
+                    res.status(400).send(result)
+                }
+            } catch (err) {
+                res.send(err.message)
+            }
+        }
+    })
+    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+
 //Delete a record from the busiestAirports table
 app.delete('/busiestAirports/deleteEntry', (req, res) => {
     var connection = mysql.createConnection({
@@ -319,6 +423,90 @@ app.delete('/busiestAirports/deleteEntry', (req, res) => {
             if (result.valid) {
                 if (connectToDB) {
                     var array = [jsonInput.ID, jsonInput.airport]
+                    connection.query(sql, array, function(err, result) {
+                        if (err) {
+                            res.send(err.message)
+                            connection.end();
+                        } else {
+                            if (result.affectedRows > 0) {
+                                res.send("The entry has been succesfully deleted")
+                                connection.end();
+                            } else {
+                                res.status(404).send("No entries were found with the parameters provided")
+                                connection.end();
+                            }
+                        }
+                    });
+                }
+            } else {
+                res.status(400).send(result)
+            }
+        } catch (err) {
+            res.send(err.message)
+        }
+    }
+});
+
+// Delete late flight data
+app.delete('/flightDelays/deleteEntry', (req, res) => {
+    var connection = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "api_database_dp"
+    });
+    var sql = "DELETE FROM airline_delay_causes WHERE year = ? AND month = ? AND carrier = ? AND airport = ? AND arr_flights = ?";
+    if (req.get("Content-Type") != "application/json") {
+        res.status(400).send("Please use Json")
+    } else {
+        try {
+            var jsonInput = req.body;
+            var result = validate(jsonInput, delayDeleteSchema);
+            if (result.valid) {
+                if (connectToDB) {
+                    var array = [jsonInput.year, jsonInput.month, jsonInput.carrier, jsonInput.airport, jsonInput.arr_flights];
+                    connection.query(sql, array, function(err, result) {
+                        if (err) {
+                            res.send(err.message)
+                            connection.end();
+                        } else {
+                            if (result.affectedRows > 0) {
+                                res.send("The entry has been succesfully deleted")
+                                connection.end();
+                            } else {
+                                res.status(404).send("No entries were found with the parameters provided")
+                                connection.end();
+                            }
+                        }
+                    });
+                }
+            } else {
+                res.status(400).send(result)
+            }
+        } catch (err) {
+            res.send(err.message)
+        }
+    }
+});
+
+// Delete tweet
+app.delete('/tweets/deleteEntry', (req, res) => {
+    var connection = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "api_database_dp"
+    });
+    var sql = "DELETE FROM tweets WHERE airline = ? AND name = ?";
+    if (req.get("Content-Type") != "application/json") {
+        res.status(400).send("Please use Json")
+    } else {
+        try {
+            var jsonInput = req.body;
+            var result = validate(jsonInput, tweetDeleteSchema);
+            if (result.valid) {
+                if (connectToDB) {
+                    var array = [jsonInput.airline, jsonInput.name];
                     connection.query(sql, array, function(err, result) {
                         if (err) {
                             res.send(err.message)

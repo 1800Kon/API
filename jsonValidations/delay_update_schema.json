@@ -1,0 +1,85 @@
+{
+    "id": "http://json-schema.org/geo",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Flight delay reasons",
+    "description": "Data about why flights are delayed when getting",
+    "type": "object",
+    "properties": {
+        "arr_flights": {
+            "description": "The number of arriving flights on the month specified",
+            "type": "number"
+        },
+        "arr_del15": {
+            "description": "The number arriving flight which were late by 15 minutes on the month specified",
+            "type": "number"
+        },
+        "carrier_ct": {
+            "description": "The number of arriving flights on the month specified which were late due to carrier delays",
+            "type": "number"
+        },
+        "weather_ct": {
+            "description": "The number of arriving flights on the month specified which were late due to weather delays",
+            "type": "number"
+        },
+        "nas_ct": {
+            "description": "The number of arriving flights on the month specified which were late due to NAS delays",
+            "type": "number"
+        },
+        "security_ct": {
+            "description": "The number of arriving flights on the month specified which were late due to security delays",
+            "type": "number"
+        },
+        "late_aircraft_ct": {
+            "description": "The number of arriving flights on the month specified which were late due to late aircraft arrival delays",
+            "type": "number"
+        },
+        "arr_cancelled": {
+            "description": "The total number of flights cancelled",
+            "type": "number"
+        },
+        "arr_diverted": {
+            "description": "The total number of flights diverted",
+            "type": "number"
+        },
+        "arr_delay": {
+            "description": "Arrival delay",
+            "type": "number"
+        },
+        "carrier_delay": {
+            "description": "Carrier delay",
+            "type": "number"
+        },
+        "weather_delay": {
+            "description": "Delay by weather",
+            "type": "number"
+        },
+        "nas_delay": {
+            "description": "National aviation security delay",
+            "type": "number"
+        },
+        "security_delay": {
+            "description": "Security delays",
+            "type": "number"
+        },
+        "late_aircraft_delay": {
+            "description": "Late aircraft delay",
+            "type": "number"
+        },
+        "year": {
+            "description": "The year in which the delay happened",
+            "type": "number"
+        },
+        "month": {
+            "description": "The month",
+            "type": "string"
+        },
+        "carrier": {
+            "description": "The carrier",
+            "type": "string"
+        },
+        "airport": {
+            "description": "The airport",
+            "type": "string"
+        }
+    }
+}

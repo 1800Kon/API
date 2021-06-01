@@ -1,0 +1,29 @@
+{
+    "id": "http://json-schema.org/geo",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Flight delay reasons",
+    "description": "Data about why flights are delayed when getting",
+    "type": "object",
+    "properties": {
+        "year": {
+            "description": "The year in which the delay happened",
+            "type": "number"
+        },
+        "month": {
+            "description": "The month",
+            "type": "string"
+        },
+        "carrier": {
+            "description": "The carrier",
+            "type": "string"
+        },
+        "airport": {
+            "description": "The airport",
+            "type": "string"
+        },
+        "arr_flights": {
+            "description": "The number of arriving flights on the month specified",
+            "type": "number"
+        }
+    }
+}
