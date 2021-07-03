@@ -4,6 +4,8 @@ var validator = require('validator')
 var app = express();
 var validate = require('jsonschema').validate;
 var libxml = require("libxmljs2");
+var Chart = require('chart.js');
+
 app.use(express.json());
 
 //Schemas
