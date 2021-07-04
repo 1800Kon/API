@@ -5,7 +5,7 @@ var app = express();
 var validate = require('jsonschema').validate;
 var libxml = require("libxmljs2");
 var Chart = require('chart.js');
-
+const ChartJsImage = require('chartjs-to-image');
 app.use(express.json());
 
 //Schemas
@@ -52,7 +52,53 @@ app.get('/', (req, res) => {
 // READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ 
 // READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ 
 
-//Get the busiest airports based on rank and year
+//Get the busiest airports graph based on rank and year
+app.get('/busiestAirports/getRankOfYearGraph/:rank/:year', (req, res) => {
+    var rank = req.params.rank;
+    var year = req.params.year;
+    var sql = "SELECT rank, year, airport, code, location, country, total_passengers FROM busiest_airports WHERE rank = ? AND year = ?";
+    //Checks if the parameters only have numbers
+    if (/^\d+$/.test(rank) && /^\d+$/.test(year)) {
+        if (connectToDB) {
+            //Values automatically escaped
+            connection.query(sql, [rank, year], function(err, result) {
+                if (err) throw err;
+                //Check if there were any results
+                if (result < 1) {
+                    res.status(404).send("No data found for these parameters.")
+                } else {
+                    var validated = validate(result, busiestAirportsSchema);
+                    if (validated) {
+                        var labelsToUse = [];
+                        var dataToUse = [];
+                        result.forEach(response => {
+                            labelsToUse.push(response.airport);
+                            dataToUse.push(response.total_passengers);
+                        });
+                        async function chartData() {
+                            const myChart = new ChartJsImage();
+                            myChart.setConfig({
+                                type: 'bar',
+                                data: { labels: labelsToUse, datasets: [{ label: 'Airport and number of passengers', data: dataToUse, fill: false, backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 50, 132, 0.2)', borderWidth: 1 }] },
+                            });
+                            const dataUrl = await myChart.getUrl()
+                            res.send("<img src=" + dataUrl + ">");
+                            //res.send(result);
+                        }
+                        chartData();
+                    } else {
+                        res.status(404).send("The data found was not valid");
+                    }
+                }
+            });
+        }
+    } else {
+        res.send("Please only use digits in the query.");
+    }
+
+});
+
+//Get the busiest airports data based on rank and year
 app.get('/busiestAirports/getRankOfYear/:rank/:year', (req, res) => {
     var rank = req.params.rank;
     var year = req.params.year;
@@ -79,11 +125,62 @@ app.get('/busiestAirports/getRankOfYear/:rank/:year', (req, res) => {
     } else {
         res.send("Please only use digits in the query.");
     }
+});
+
+//Get graph for airport aircraft delay depending on year and month
+app.get('/flightDelays/delaysFromYearMonthGraph/:year/:month', (req, res) => {
+    var year = req.params.year;
+    var month = req.params.month;
+    var sql = "SELECT year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay FROM airline_delay_causes WHERE year = ? AND month = ?";
+    //Checks if the parameters only have numbers
+    if (/^\d+$/.test(year) && /^\d+$/.test(month)) {
+        if (connectToDB) {
+            //Values automatically escaped
+            connection.query(sql, [year, month], function(err, result) {
+                if (err) throw err;
+                //Check if there were any results
+                if (result < 1) {
+                    res.status(404).send("No data found for these parameters.")
+                } else {
+                    var validated = validate(result, delayGetSchema);
+                    if (validated) {
+                        var labelsToUse = [];
+                        var dataToUse = [];
+                        var breakout = false;
+                        result.forEach(response => {
+                            if (!breakout) {
+                                labelsToUse.push(response.airport_name);
+                                dataToUse.push(response.arr_del15);
+                            }
+                            if (dataToUse.length > 20) {
+                                breakout = true;
+                            }
+                        });
+                        async function chartData() {
+                            const myChart = new ChartJsImage();
+                            myChart.setConfig({
+                                type: 'bar',
+                                data: { labels: labelsToUse, datasets: [{ label: 'Total of arriving flight with delays (First 20)', data: dataToUse, fill: false, backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 50, 132, 0.2)', borderWidth: 1 }] },
+                            });
+                            const dataUrl = await myChart.getShortUrl()
+                            res.send("<img src=" + dataUrl + ">");
+                            //res.send(result);
+                        }
+                        chartData();
+                    } else {
+                        res.status(404).send("The data found was not valid");
+                    }
+                }
+            });
+        }
+    } else {
+        res.send("Please only use digits in the query.");
+    }
 
 });
 
-//Get data for all flights months which had more than x amount of late flights from a year
-app.get('/flightDelays/delaysFromYearMonth/:year/:month', (req, res) => {
+//Get data for airport aircraft delay depending on year and month
+app.get('/flightDelays/delaysFromYearMonthGraph/:year/:month', (req, res) => {
     var year = req.params.year;
     var month = req.params.month;
     var sql = "SELECT year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay FROM airline_delay_causes WHERE year = ? AND month = ?";
@@ -111,6 +208,53 @@ app.get('/flightDelays/delaysFromYearMonth/:year/:month', (req, res) => {
     }
 
 });
+
+//Get all positive or negative tweets chart towards an airline
+app.get('/tweets/getPositiveNegativeTweetsAirlineGraph/:sentiment/:airline', (req, res) => {
+    var sentiment = req.params.sentiment;
+    var airline = req.params.airline;
+    var sql = "SELECT COUNT(text) as totalCount, airline FROM tweets WHERE airline_sentiment = ? AND airline LIKE ?";
+    //Checks if the parameters only have numbers
+    if (connectToDB) {
+        //Values automatically escaped
+        connection.query(sql, [sentiment, airline], function(err, result) {
+            if (err) throw err;
+            //Check if there were any results
+            if (result < 1) {
+                res.status(404).send("No data found for these parameters.")
+            } else {
+                var validated = validate(result, tweetGetSchema)
+                if (validated) {
+                    var labelsToUse = [];
+                    var dataToUse = [];
+                    var breakout = false;
+                    result.forEach(response => {
+                        if (!breakout) {
+                            labelsToUse.push(response.airline);
+                            dataToUse.push(response.totalCount);
+                        }
+                        if (dataToUse.length > 20) {
+                            breakout = true;
+                        }
+                    });
+                    async function chartData() {
+                        const myChart = new ChartJsImage();
+                        myChart.setConfig({
+                            type: 'bar',
+                            data: { labels: labelsToUse, datasets: [{ label: 'Total number of tweets toward airline with specified sentiment', data: dataToUse, fill: false, backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 50, 132, 0.2)', borderWidth: 1 }] },
+                        });
+                        const dataUrl = await myChart.getShortUrl()
+                        res.send("<img src=" + dataUrl + ">");
+                    }
+                    chartData();
+                } else {
+                    res.status(404).send("The data found was not valid");
+                }
+            }
+        });
+    }
+});
+
 //Get all positive or negative tweets towards an airline
 app.get('/tweets/getPositiveNegativeTweetsAirline/:sentiment/:airline', (req, res) => {
     var sentiment = req.params.sentiment;
@@ -360,52 +504,53 @@ app.put('/flightDelays/updateData', (req, res) => {
 
 // Update tweet
 app.put('/tweets/updateTweetText', (req, res) => {
-        //Connection
-        var connection = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "",
-            database: "api_database_dp"
-        });
-        var sql = "UPDATE tweets SET text = ? WHERE name = ? AND airline = ?"
-        if (req.get("Content-Type") != "application/json") {
-            res.status(400).send("Please use Json")
-        } else {
-            try {
-                var jsonInput = req.body;
-                var result = validate(jsonInput, tweetUpdateSchema);
-                if (result.valid) {
-                    if (connectToDB) {
-                        var array = [jsonInput.text, jsonInput.name, jsoninput.airline];
-                        connection.query(sql, array, function(err, result) {
-                            if (err) {
-                                res.send(err.message)
+    //Connection
+    var connection = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "api_database_dp"
+    });
+    var sql = "UPDATE tweets SET text = ? WHERE name = ? AND airline = ?"
+    if (req.get("Content-Type") != "application/json") {
+        res.status(400).send("Please use Json")
+    } else {
+        try {
+            var jsonInput = req.body;
+            var result = validate(jsonInput, tweetUpdateSchema);
+            if (result.valid) {
+                if (connectToDB) {
+                    var array = [jsonInput.text, jsonInput.name, jsoninput.airline];
+                    connection.query(sql, array, function(err, result) {
+                        if (err) {
+                            res.send(err.message)
+                            connection.end();
+                        } else {
+                            if (result.affectedRows > 0) {
+                                res.send("The row has been succesfully updated")
                                 connection.end();
                             } else {
-                                if (result.affectedRows > 0) {
-                                    res.send("The row has been succesfully updated")
-                                    connection.end();
-                                } else {
-                                    res.status(404).send("No entries were found with the parameters provided")
-                                    connection.end();
-                                }
+                                res.status(404).send("No entries were found with the parameters provided")
+                                connection.end();
                             }
-                        });
+                        }
+                    });
 
-                    }
-                } else {
-                    res.status(400).send(result)
                 }
-            } catch (err) {
-                res.send(err.message)
+            } else {
+                res.status(400).send(result)
             }
+        } catch (err) {
+            res.send(err.message)
         }
-    })
-    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
-    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
-    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
-    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
-    // DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+    }
+});
+
+// DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+// DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+// DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+// DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
+// DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE DELETE 
 
 //Delete a record from the busiestAirports table
 app.delete('/busiestAirports/deleteEntry', (req, res) => {
