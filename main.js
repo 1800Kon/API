@@ -520,7 +520,7 @@ app.put('/tweets/updateTweetText', (req, res) => {
             var result = validate(jsonInput, tweetUpdateSchema);
             if (result.valid) {
                 if (connectToDB) {
-                    var array = [jsonInput.text, jsonInput.name, jsoninput.airline];
+                    var array = [jsonInput.text, jsonInput.name, jsonInput.airline];
                     connection.query(sql, array, function(err, result) {
                         if (err) {
                             res.send(err.message)
