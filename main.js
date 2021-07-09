@@ -43,7 +43,7 @@ function connectToDB() {
 
 //Main page
 app.get('/', (req, res) => {
-    res.send("This is the main page where I'll put an index");
+    res.send("This is the main page");
 })
 
 // READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ READ
@@ -180,7 +180,7 @@ app.get('/flightDelays/delaysFromYearMonthGraph/:year/:month', (req, res) => {
 });
 
 //Get data for airport aircraft delay depending on year and month
-app.get('/flightDelays/delaysFromYearMonthGraph/:year/:month', (req, res) => {
+app.get('/flightDelays/delaysFromYearMonth/:year/:month', (req, res) => {
     var year = req.params.year;
     var month = req.params.month;
     var sql = "SELECT year, month, carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, carrier_ct, weather_ct, nas_ct, security_ct, late_aircraft_ct, arr_cancelled, arr_diverted, arr_delay FROM airline_delay_causes WHERE year = ? AND month = ?";
